@@ -49,7 +49,6 @@ int main()
     report.report_id = 0x02; // Report ID
     report.command = 0x02;   // Command code, e.g., macro 1
     report.data[0] = 0x01;   // Example data for macro 1
-
     // Send the report
     res = hid_write(handle, (uint8_t *)&report, sizeof(report));
     if (res < 0)
