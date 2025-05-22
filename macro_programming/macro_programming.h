@@ -6,6 +6,12 @@
 #include <string.h>
 #include "../lib/hidapi/hidapi/hidapi.h"
 #include "keycodes.h"
+// HID Report Struct (Report ID and reserved removed)
+typedef struct __attribute__((packed)) // Make sure it is always 7 bytes
+{
+    uint8_t modifier;
+    uint8_t keycode[6];
+} hid_macro_report_t;
 
 #define HID_REPORT_FULL(mod, k0, k1, k2, k3, k4, k5) \
     ((hid_macro_report_t){                           \
@@ -24,13 +30,6 @@ typedef struct __attribute__((packed))
     uint8_t command;
     uint8_t data[7];
 } hid_cmd_report_t; // HID command report structure
-
-// HID Report Struct (Report ID and reserved removed)
-typedef struct __attribute__((packed)) // Make sure it is always 7 bytes
-{
-    uint8_t modifier;
-    uint8_t keycode[6];
-} hid_macro_report_t;
 
 enum
 {

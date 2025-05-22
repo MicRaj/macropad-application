@@ -15,6 +15,8 @@ include_directories(
 
 add_executable(macropad-application
         macro_programming/macro_programming.c
+        parse_dsl/parse_dsl.c
+        parse_dsl/read_dsl_file.c
         main.c
         )
 
