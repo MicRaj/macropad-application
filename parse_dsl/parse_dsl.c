@@ -28,7 +28,7 @@ int count_macro_reports(const char *dsl)
     return count;
 }
 
-hid_macro_report_t *parse_macro_dsl(const char *dsl, int *out_len)
+hid_macro_report_t *parse_macro_dsl(const char *dsl, int *out_len, int *macro_slot)
 {
     int count = count_macro_reports(dsl);
     if (out_len)
@@ -39,6 +39,21 @@ hid_macro_report_t *parse_macro_dsl(const char *dsl, int *out_len)
 
     uint8_t modifier = 0;
     int i = 0, r = 0;
+
+    // Read {macro_slot} if present
+    if (isdigit(dsl[i]) && (dsl[i + 1] == ':'))
+    {
+        *macro_slot = dsl[i] - '0';
+        if (*macro_slot < 0 || *macro_slot > 8)
+        {
+            *macro_slot = 0; // Default to 0 if out of range
+        }
+        i += 2;
+    }
+    else
+    {
+        *macro_slot = 0; // Default to 0 if no slot specified
+    }
 
     while (dsl[i] && r < count)
     {

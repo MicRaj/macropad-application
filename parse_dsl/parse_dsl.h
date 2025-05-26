@@ -13,5 +13,5 @@
 #define MOD_ALT 0x04
 #define MOD_GUI 0x08
 
-hid_macro_report_t *parse_macro_dsl(const char *dsl, int *out_len);
+hid_macro_report_t *parse_macro_dsl(const char *dsl, int *out_len, int *macro_slot);
 #endif
