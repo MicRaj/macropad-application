@@ -1,0 +1,9 @@
+0:zero
+1:!h!e!l!lo
+2:hithere
+3:abcde
+4:hi
+5:five
+6:!six
+7:!seven
+8:hi
