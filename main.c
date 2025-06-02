@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 #define VENDOR_ID 0xcafe
-#define PRODUCT_ID 0x4004
+#define PRODUCT_ID 0x400c
 
 int main()
 {

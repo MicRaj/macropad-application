@@ -4,10 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../lib/hidapi/hidapi/hidapi.h"
+#include <hidapi/hidapi.h>
 #include "keycodes.h"
+
 // HID Report Struct (Report ID and reserved removed)
-typedef struct __attribute__((packed)) // Make sure it is always 7 bytes
+typedef struct
 {
     uint8_t modifier;
     uint8_t keycode[6];
@@ -24,7 +25,7 @@ typedef struct __attribute__((packed)) // Make sure it is always 7 bytes
 #define HID_REPORT_EMPTY \
     HID_REPORT_FULL(0, 0, 0, 0, 0, 0, 0)
 
-typedef struct __attribute__((packed))
+typedef struct
 {
     uint8_t report_id;
     uint8_t command;
