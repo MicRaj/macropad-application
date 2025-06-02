@@ -20,10 +20,15 @@ void send_add_command(hid_device *handle, hid_macro_report_t data)
 
     report.report_id = REPORT_ID_CUSTOM; // Report ID
     report.command = CMD_ADD;            // Command code, e.g., macro 1
-    memcpy(report.data, &data, sizeof(report.data));
+    report.data[0] = data.modifier;
+    memcpy(&report.data[1], data.keycode, 6); // copy 6 keycodes
 
     // Send the report
-    hid_write(handle, (uint8_t *)&report, sizeof(report));
+    res = hid_write(handle, (uint8_t *)&report, sizeof(report));
+    if (res < 0)
+    {
+        fprintf(stderr, "Error sending add command: %ls\n", hid_error(handle));
+    }
 }
 
 void send_commit_command(hid_device *handle, uint8_t index)
