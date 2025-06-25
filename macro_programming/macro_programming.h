@@ -40,9 +40,10 @@ enum
 
 enum
 {
-    CMD_CLEAR, // Clear the current working buffer (before adding new reports)
-    CMD_ADD,   // Add a single hid_macro_report_t to the working buffer
-    CMD_COMMIT // Save the working buffer to the specified macro slot
+    CMD_CLEAR,  // Clear the current working buffer (before adding new reports)
+    CMD_ADD,    // Add a single hid_macro_report_t to the working buffer
+    CMD_COMMIT, // Save the working buffer to the specified macro slot
+    CMD_FLASH   // Flash the current macro_store to flash
 };
 
 void send_clear_command(hid_device *handle);
@@ -50,5 +51,7 @@ void send_clear_command(hid_device *handle);
 void send_add_command(hid_device *handle, hid_macro_report_t data);
 
 void send_commit_command(hid_device *handle, uint8_t index);
+
+void send_flash_command(hid_device *handle);
 
 #endif

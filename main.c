@@ -15,6 +15,8 @@ int main()
         fprintf(stderr, "Failed to initialize hidapi\n");
         return 1;
     }
+    const char *version = hid_version_str();
+    printf("HIDAPI version: %s\n", version);
 
     devs = hid_enumerate(VENDOR_ID, PRODUCT_ID);
     cur_dev = devs;
@@ -70,11 +72,12 @@ int main()
             }
             printf(" Macro Slot: %d \r\n", macro_slot);
             send_add_command(handle, reports[j]);
-            send_add_command(handle, HID_REPORT_EMPTY);
         }
-        free(lines[i]); // Free each line
+        free(lines[i]); // Free each line after processing
+        // send_add_command(handle, HID_REPORT_EMPTY); Might be need in the future, empty report is sent by the firmware when a macro is played.
         send_commit_command(handle, macro_slot);
     }
+    send_flash_command(handle); // Flash the current macro_store to flash
 
     free(lines); // Free the array of pointers
 
