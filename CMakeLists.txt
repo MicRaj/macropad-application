@@ -2,12 +2,13 @@ cmake_minimum_required(VERSION 3.13)
 project(macropad-application)
 
 # Platform-specific HIDAPI settings
-if (WIN32)
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "Static link" FORCE)
-    set(HIDAPI_WITH_HIDRAW OFF CACHE BOOL "" FORCE)
-    set(HIDAPI_WITH_LIBUSB OFF CACHE BOOL "" FORCE)
-    set(HIDAPI_WITH_HID ON CACHE BOOL "" FORCE)
-endif()
+# if (WIN32)
+#     set(BUILD_SHARED_LIBS OFF CACHE BOOL "Static link" FORCE)
+#     set(HIDAPI_USE_DDK OFF CACHE BOOL "Use HIDAPI DDK backend" FORCE)
+#     set(HIDAPI_WITH_HIDRAW OFF CACHE BOOL "" FORCE)
+#     set(HIDAPI_WITH_LIBUSB OFF CACHE BOOL "" FORCE)
+#     set(HIDAPI_WITH_HID OFF CACHE BOOL "" FORCE)
+# endif()
 
 # Add HIDAPI from subdirectory
 add_subdirectory(lib/hidapi)

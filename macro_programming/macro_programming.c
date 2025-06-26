@@ -2,32 +2,33 @@
 
 void send_clear_command(hid_device *handle)
 {
-
     int res;
-    hid_cmd_report_t report = {0}; // HID report buffer (1st byte is report ID)
+    hid_cmd_report_t report = {0};
 
-    report.report_id = REPORT_ID_CUSTOM; // Report ID
-    report.command = CMD_CLEAR;          // Command code, e.g., macro 1
+    report.report_id = REPORT_ID_CUSTOM;
+    report.command = CMD_CLEAR;
 
-    // Send the report
     hid_write(handle, (uint8_t *)&report, sizeof(report));
 }
 
 void send_add_command(hid_device *handle, hid_macro_report_t data)
 {
     int res;
-    hid_cmd_report_t report = {0};
+    uint8_t buffer[65] = {0}; // 1 report_id + 1 command + 7 data bytes
 
-    report.report_id = REPORT_ID_CUSTOM; // Report ID
-    report.command = CMD_ADD;            // Command code, e.g., macro 1
-    report.data[0] = data.modifier;
-    memcpy(&report.data[1], data.keycode, 6); // copy 6 keycodes
+    buffer[0] = REPORT_ID_CUSTOM;
+    buffer[1] = CMD_ADD;
+    buffer[2] = data.modifier;
+    memcpy(&buffer[3], data.keycode, 6);
 
-    // Send the report
-    res = hid_write(handle, (uint8_t *)&report, sizeof(report));
+    res = hid_write(handle, buffer, sizeof(buffer));
     if (res < 0)
     {
         fprintf(stderr, "Error sending add command: %ls\n", hid_error(handle));
+    }
+    else
+    {
+        printf("hid_write() sent %d bytes\n", res);
     }
 }
 
@@ -36,10 +37,20 @@ void send_commit_command(hid_device *handle, uint8_t index)
     int res;
     hid_cmd_report_t report = {0};
 
-    report.report_id = REPORT_ID_CUSTOM; // Report ID
-    report.command = CMD_COMMIT;         // Command code, e.g., macro 1
-    report.data[0] = index;              // Example data for macro 1
+    report.report_id = REPORT_ID_CUSTOM;
+    report.command = CMD_COMMIT;
+    report.data[0] = index;
 
-    // Send the report
+    hid_write(handle, (uint8_t *)&report, sizeof(report));
+}
+
+void send_flash_command(hid_device *handle)
+{
+    int res;
+    hid_cmd_report_t report = {0};
+
+    report.report_id = REPORT_ID_CUSTOM;
+    report.command = CMD_FLASH;
+
     hid_write(handle, (uint8_t *)&report, sizeof(report));
 }
