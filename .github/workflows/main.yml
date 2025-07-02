@@ -13,10 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: recursive # pico-sdk submodule
+          submodules: recursive
 
       - name: Install dependencies
-        run: sudo apt update && sudo apt install -y cmake build-essential
+        run: sudo apt update && sudo apt install -y cmake build-essential libudev-dev
 
       - name: Configure and build
         run: |
@@ -38,6 +38,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Install MSYS2 and GCC
         uses: msys2/setup-msys2@v2
