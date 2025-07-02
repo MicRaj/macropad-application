@@ -16,7 +16,7 @@ jobs:
           submodules: recursive
 
       - name: Install dependencies
-        run: sudo apt update && sudo apt install -y cmake build-essential libudev-dev
+        run: sudo apt update && sudo apt install -y cmake build-essential libudev-dev libusb-1.0-0-dev
 
       - name: Configure and build
         run: |
@@ -63,4 +63,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-binary
-          path: build/
+          path: |
+            build/*.exe
+            README.md
+            program.txt
