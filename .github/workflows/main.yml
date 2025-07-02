@@ -2,6 +2,10 @@ name: Build C Application
 
 on:
   push:
+    branches:
+      - "**"
+    tags:
+      - "v*"
   pull_request:
 
 jobs:
@@ -34,7 +38,7 @@ jobs:
       - name: Upload Linux binary
         uses: actions/upload-artifact@v4
         with:
-          name: linux-binary
+          name: macropad-linux
           path: upload/*
 
   build-windows:
@@ -74,5 +78,40 @@ jobs:
       - name: Upload Windows binary
         uses: actions/upload-artifact@v4
         with:
-          name: windows-binary
+          name: macropad-windows
           path: upload/*
+
+  create-release:
+    needs: [build-linux, build-windows]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-latest-zip
+          path: ./windows
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-latest-zip
+          path: ./linux
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+
+      - name: Upload Windows ZIP to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./windows/macropad-windows.zip
+          tag_name: ${{ github.ref_name }}
+
+      - name: Upload Linux ZIP to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./linux/macropad-linux.zip
+          tag_name: ${{ github.ref_name }}
