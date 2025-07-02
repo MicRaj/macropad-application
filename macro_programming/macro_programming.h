@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <hidapi/hidapi.h>
-#include "keycodes.h"
+
+#define ENDPOINT_SIZE 9
 
 // HID Report Struct (Report ID and reserved removed)
 typedef struct
