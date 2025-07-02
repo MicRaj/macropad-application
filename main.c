@@ -65,13 +65,16 @@ int main()
         hid_macro_report_t *reports = parse_macro_dsl(lines[i], &num_reports, &macro_slot);
         for (int j = 0; j < num_reports; j++)
         {
+            // Debug prints
             printf("Report %d: modifier: %02x, keycode: ", j + 1, reports[j].modifier);
             for (int k = 0; k < 6; k++)
             {
                 printf("%02x ", reports[j].keycode[k]);
             }
             printf(" Macro Slot: %d \r\n", macro_slot);
+
             send_add_command(handle, reports[j]);
+            send_add_command(handle, HID_REPORT_EMPTY); // Send empty report after each macro report, can be optimised
         }
         free(lines[i]); // Free each line after processing
         // send_add_command(handle, HID_REPORT_EMPTY); Might be need in the future, empty report is sent by the firmware when a macro is played.

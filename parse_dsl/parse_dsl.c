@@ -1,11 +1,23 @@
 #include "parse_dsl.h"
+#include "char_to_hid_map.h"
 
-// Map ASCII letter to HID keycode (only for a-z, A-Z)
-uint8_t char_to_hid(char c)
+uint8_t lookup_modifier(char symbol)
 {
-    if ('a' <= c && c <= 'z')
-        return 0x04 + (c - 'a');
+    for (int i = 0; i < modifier_mappings_count; i++)
+    {
+        if (modifier_mappings[i].symbol == symbol)
+            return modifier_mappings[i].keycode;
+    }
+    return 0;
+}
 
+uint8_t lookup_keycode(char symbol)
+{
+    for (int i = 0; i < character_mappings_count; i++)
+    {
+        if (character_mappings[i].symbol == symbol)
+            return character_mappings[i].keycode;
+    }
     return 0;
 }
 
@@ -15,11 +27,12 @@ int count_macro_reports(const char *dsl)
     int count = 0;
     for (int i = 0; dsl[i]; i++)
     {
-        if (isalpha(dsl[i]))
+        if (lookup_keycode(dsl[i]) != 0)
         {
             count++;
-            // Skip chorded keys
-            while (dsl[i + 1] == '+' && isalpha(dsl[i + 2]))
+
+            // Skip chorded keys like +X+Y
+            while (dsl[i + 1] == '+' && lookup_keycode(dsl[i + 2]) != 0)
             {
                 i += 2;
             }
@@ -37,6 +50,7 @@ hid_macro_report_t *parse_macro_dsl(const char *dsl, int *out_len, int *macro_sl
     if (!reports)
         return NULL;
 
+    uint8_t keycode = 0;
     uint8_t modifier = 0;
     int i = 0, r = 0;
 
@@ -62,33 +76,32 @@ hid_macro_report_t *parse_macro_dsl(const char *dsl, int *out_len, int *macro_sl
         // Read modifiers
         while (dsl[i])
         {
-            if (dsl[i] == '!')
-                modifier |= MOD_SHIFT;
-            else if (dsl[i] == '^')
-                modifier |= MOD_CTRL;
-            else if (dsl[i] == '@')
-                modifier |= MOD_ALT;
-            else if (dsl[i] == '#')
-                modifier |= MOD_GUI;
-            else
+            uint8_t mod = lookup_modifier(dsl[i]);
+            if (mod == 0)
                 break;
+            modifier |= mod;
             i++;
         }
 
-        // If next is letter, start new report
-        if (isalpha(dsl[i]))
+        keycode = lookup_keycode(dsl[i]);
+        if (keycode != 0)
         {
             hid_macro_report_t report = {0};
             report.modifier = modifier;
             int kc = 0;
 
-            report.keycode[kc++] = char_to_hid(dsl[i++]);
+            report.keycode[kc++] = keycode;
+            i++;
 
-            // Handle chorded keys: +X+Y...
-            while (dsl[i] == '+' && isalpha(dsl[i + 1]) && kc < 6)
+            // Handle chorded keys
+            while (dsl[i] == '+' && dsl[i + 1] && kc < 6)
             {
-                i++; // skip '+'
-                report.keycode[kc++] = char_to_hid(dsl[i++]);
+                keycode = lookup_keycode(dsl[i + 1]); // skip the '+' character
+                if (keycode == 0)
+                    break;
+
+                report.keycode[kc++] = keycode;
+                i += 2; // Move past the '+' and the next character
             }
 
             reports[r++] = report;

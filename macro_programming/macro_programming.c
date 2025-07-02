@@ -14,7 +14,7 @@ void send_clear_command(hid_device *handle)
 void send_add_command(hid_device *handle, hid_macro_report_t data)
 {
     int res;
-    uint8_t buffer[65] = {0}; // 1 report_id + 1 command + 7 data bytes
+    uint8_t buffer[ENDPOINT_SIZE] = {0}; // 1 report_id + 1 command + 7 data bytes (needs +1 to work)
 
     buffer[0] = REPORT_ID_CUSTOM;
     buffer[1] = CMD_ADD;
@@ -25,10 +25,6 @@ void send_add_command(hid_device *handle, hid_macro_report_t data)
     if (res < 0)
     {
         fprintf(stderr, "Error sending add command: %ls\n", hid_error(handle));
-    }
-    else
-    {
-        printf("hid_write() sent %d bytes\n", res);
     }
 }
 

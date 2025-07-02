@@ -1,6 +1,6 @@
-0:zero
-1:!h!e!l!lo
-2:hithere
+0:!hello there!1E
+1:!welcome to my !macropad !demo !1!1!1E
+2:!@v
 3:abcde
 4:hi
 5:five
